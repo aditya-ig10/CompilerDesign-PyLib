@@ -205,23 +205,22 @@ nav {
   display: flex;
   align-items: center;
   min-height: 46px;
-  color: var(--accent-5);
 }
 
 .hero-install .install-box code {
   font-family: 'Space Mono', monospace;
   font-size: 1rem;
   line-height: 1.2;
-  color: inherit !important;
   background: transparent;
   border: 0;
   padding: 0;
 }
 
-/* Extra specificity to avoid any global `code { color: ... }` overrides */
-.hero-install #installCmd {
+/* HERO INSTALL COMMAND - STRONG OVERRIDE */
+.hero-install #installCmd,
+.hero-install .install-command {
   color: #FF6B00 !important;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .hero-install .install-box .copy-btn {
@@ -548,6 +547,13 @@ code {
 
 pre code {
   color: var(--code-fg);
+}
+
+.plain-code-block pre,
+.plain-code-block pre code {
+  color: var(--code-fg) !important;
+  -webkit-text-fill-color: var(--code-fg);
+  text-fill-color: var(--code-fg);
 }
 
 /* Inline code (keep subtle; use .inline-code-strong for emphasis) */
@@ -967,7 +973,7 @@ footer {
         <span class="install-label">pip</span>
         <div class="install-box" aria-label="Install command">
           <button class="copy-btn" onclick="copyInstall(this)">copy</button>
-          <code id="installCmd" style="color:#FF6B00 !important; font-weight:900;">pip install compilerdesign</code>
+          <code id="installCmd" class="install-command">pip install compilerdesign</code>
         </div>
       </div>
       <div class="hero-badges">
@@ -1054,7 +1060,7 @@ footer {
           <div class="step-content">
             <h4>Install the package</h4>
             <p>Requires Python 3.8 or later. No external dependencies.</p>
-            <div class="code-block" style="margin-top:0.8rem">
+            <div class="code-block plain-code-block" style="margin-top:0.8rem">
               <button class="copy-btn" onclick="copyCode(this)">copy</button>
               <div class="code-label">bash</div>
               <pre><code>pip install compilerdesign</code></pre>
