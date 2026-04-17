@@ -4,6 +4,14 @@ sys.path.insert(0, '.')
 
 import compilerdesign as cd
 
+
+def test_help():
+    message = cd.help()
+    assert "compilerdesign v1.0.1" in message
+    assert "Aditya" in message
+    assert "aditya-ig10" in message
+    print("✓ help")
+
 def test_lexical():
     code = "int main() { int x = 10; return x + 1; }"
     r = cd.lexical_analyzer(code)
@@ -93,6 +101,7 @@ def test_intermediate_code():
 
 if __name__ == "__main__":
     print("Running compilerdesign tests...\n")
+    test_help()
     test_lexical()
     test_left_recursion()
     test_left_factoring()

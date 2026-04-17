@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>compilerdesign — Python Library Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS CUSTOM PROPERTIES
+   ============================================================ */
+:root {
+  --bg:          #F5F0E8;
+  --bg-alt:      #EDE8DC;
+  --surface:     #FFFFFF;
+  --surface-2:   #FFF9EF;
+  --ink:         #0A0A0A;
+  --ink-soft:    #2A2A2A;
+  --ink-muted:   #5A5A5A;
+  --border:      #0A0A0A;
+  --shadow:      #0A0A0A;
+  --accent-1:    #FF3B30;   /* red */
+  --accent-2:    #FFD600;   /* yellow */
+  --accent-3:    #00C896;   /* green */
+  --accent-4:    #0057FF;   /* blue */
+  --accent-5:    #FF6B00;   /* orange */
+  --tag-bg:      #0A0A0A;
+  --tag-fg:      #F5F0E8;
+  --code-bg:     #1A1A1A;
+  --code-fg:     #E8E0D0;
+  --nav-bg:      #0A0A0A;
+  --nav-fg:      #F5F0E8;
+  --hero-stripe: #FFD600;
+  --border-w:    3px;
+  --shadow-off:  5px;
+  --radius:      0px;
+  --transition:  0.18s ease;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--ink);
+  border: 2px solid var(--bg);
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--nav-bg);
+  color: var(--nav-fg);
+  border-bottom: var(--border-w) solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 58px;
+}
+
+.nav-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.7rem;
+  letter-spacing: 2px;
+  color: var(--nav-fg);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-brand .pip-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  background: var(--accent-2);
+  color: #0A0A0A;
+  padding: 2px 8px;
+  border: 2px solid #0A0A0A;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  background: var(--surface);
+  border-bottom: var(--border-w) solid var(--border);
+  padding: 5rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-stripe {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 10px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--hero-stripe) 0,
+    var(--hero-stripe) 40px,
+    transparent 40px,
+    transparent 60px
+  );
+}
+
+.hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3rem;
+  align-items: center;
+}
+
+.hero-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-1);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 30px;
+  height: 3px;
+  background: var(--accent-1);
+}
+
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  line-height: 0.95;
+  letter-spacing: 2px;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+}
+
+.hero h1 span {
+  color: var(--accent-4);
+  display: block;
+}
+
+.hero-sub {
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+  max-width: 520px;
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}
+
+.hero-install {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 2rem;
+}
+
+.hero-install .install-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 12px 16px;
+  border: var(--border-w) solid var(--border);
+}
+
+.hero-install .install-box {
+  position: relative;
+  background: var(--surface-2);
+  border: var(--border-w) solid var(--border);
+  border-left: none;
+  padding: 12px 54px 12px 18px;
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  color: var(--accent-5);
+}
+
+.hero-install .install-box code {
+  font-family: 'Space Mono', monospace;
+  font-size: 1rem;
+  line-height: 1.2;
+  color: inherit !important;
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+/* Extra specificity to avoid any global `code { color: ... }` overrides */
+.hero-install #installCmd {
+  color: #FF6B00 !important;
+  font-weight: 800;
+}
+
+.hero-install .install-box .copy-btn {
+  top: 8px;
+  right: 8px;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border: 2px solid var(--ink);
+  text-transform: uppercase;
+  background: var(--surface);
+}
+
+.badge.yellow { background: var(--accent-2); border-color: #0A0A0A; color: #0A0A0A; }
+.badge.red    { background: var(--accent-1); border-color: var(--border); color: #FFF; }
+.badge.green  { background: var(--accent-3); border-color: var(--border); color: #0A0A0A; }
+.badge.blue   { background: var(--accent-4); border-color: var(--border); color: #FFF; }
+
+/* Hero Grid Decorative */
+.hero-grid-art {
+  display: grid;
+  grid-template-columns: repeat(3, 70px);
+  grid-template-rows: repeat(3, 70px);
+  gap: 6px;
+}
+
+.grid-cell {
+  border: var(--border-w) solid var(--border);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  text-align: center;
+  color: var(--ink-muted);
+  transition: background var(--transition);
+}
+
+.grid-cell.filled-1 { background: var(--accent-2); color: #0A0A0A; }
+.grid-cell.filled-2 { background: var(--accent-1); color: white; }
+.grid-cell.filled-3 { background: var(--accent-4); color: white; }
+.grid-cell.filled-4 { background: var(--accent-3); color: #0A0A0A; }
+.grid-cell.filled-5 { background: var(--ink); color: var(--bg); }
+
+/* ============================================================
+   STATS BAR
+   ============================================================ */
+.stats-bar {
+  background: var(--accent-2);
+  border-bottom: var(--border-w) solid #0A0A0A;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  overflow-x: auto;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 2rem;
+  border-right: 2px solid #0A0A0A;
+  min-width: 120px;
+}
+
+.stat-item:last-child { border-right: none; }
+
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  line-height: 1;
+  color: #0A0A0A;
+}
+
+.stat-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #1A1A1A;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 0;
+  align-items: start;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.sidebar {
+  position: sticky;
+  top: 58px;
+  height: calc(100vh - 58px);
+  overflow-y: auto;
+  border-right: var(--border-w) solid var(--border);
+  padding: 2rem 0;
+  background: var(--bg);
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--ink-muted); }
+
+.sidebar-section-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  padding: 0.5rem 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.sidebar-section-title:first-child { margin-top: 0; }
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 1.5rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  border-left: 4px solid transparent;
+  transition: all var(--transition);
+  line-height: 1.3;
+}
+
+.sidebar-link .link-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--ink-muted);
+  min-width: 20px;
+}
+
+.sidebar-link:hover {
+  background: var(--surface);
+  color: var(--ink);
+  border-left-color: var(--accent-1);
+}
+
+.sidebar-link.active {
+  background: var(--ink);
+  color: var(--bg);
+  border-left-color: var(--accent-2);
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+main {
+  padding: 3rem 3rem 6rem;
+  min-width: 0;
+}
+
+/* ============================================================
+   SECTION HEADINGS
+   ============================================================ */
+.doc-section {
+  margin-bottom: 5rem;
+  padding-bottom: 3rem;
+  border-bottom: var(--border-w) solid var(--border);
+}
+
+.doc-section:last-child { border-bottom: none; }
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.section-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.5rem;
+  line-height: 1;
+  color: var(--accent-2);
+  -webkit-text-stroke: 2px var(--ink);
+  text-stroke: 2px var(--ink);
+  flex-shrink: 0;
+  min-width: 60px;
+  text-align: right;
+}
+
+.section-title-block h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  letter-spacing: 1px;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+  color: var(--ink);
+}
+
+.section-title-block .section-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   FUNCTION CARDS
+   ============================================================ */
+.fn-card {
+  background: var(--surface);
+  border: var(--border-w) solid var(--border);
+  box-shadow: var(--shadow-off) var(--shadow-off) 0 var(--shadow);
+  margin-bottom: 1.5rem;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.fn-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--shadow);
+}
+
+.fn-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: var(--border-w) solid var(--border);
+  background: var(--surface-2);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.fn-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent-4);
+}
+
+.fn-signature {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+}
+
+.fn-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.fn-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border: 2px solid var(--border);
+  text-transform: uppercase;
+  background: var(--tag-bg);
+  color: var(--tag-fg);
+}
+
+.fn-card-body { padding: 1.5rem; }
+
+.fn-desc {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  margin-bottom: 1.2rem;
+  line-height: 1.7;
+}
+
+/* ============================================================
+   CODE BLOCKS
+   ============================================================ */
+.code-block {
+  background: var(--code-bg);
+  border: var(--border-w) solid var(--border);
+  position: relative;
+  margin-top: 0.5rem;
+}
+
+.code-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  background: var(--accent-2);
+  color: #0A0A0A;
+  display: inline-block;
+  border-bottom: var(--border-w) solid var(--border);
+}
+
+pre {
+  padding: 1.2rem 1.5rem;
+  overflow-x: auto;
+  margin: 0;
+}
+
+code {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: inherit;
+}
+
+pre code {
+  color: var(--code-fg);
+}
+
+/* Inline code (keep subtle; use .inline-code-strong for emphasis) */
+p code, li code, td code, .callout code, .fn-desc code {
+  background: transparent;
+  color: var(--ink);
+  padding: 0;
+  border: 0;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.inline-code-strong {
+  background: #D8F4EA;
+  color: #0B5A44;
+  padding: 1px 6px;
+  border: 1px solid #0B5A44;
+  font-weight: 800;
+}
+
+/* Syntax coloring */
+.tok-kw   { color: #FF7B72; }
+.tok-str  { color: #A5D6FF; }
+.tok-cmt  { color: #8B949E; font-style: italic; }
+.tok-fn   { color: #D2A8FF; }
+.tok-num  { color: #79C0FF; }
+.tok-pun  { color: #E8E0D0; }
+.tok-var  { color: #FFA657; }
+.tok-ret  { color: #E8E0D0; }
+
+/* Copy button */
+.copy-btn {
+  position: absolute;
+  top: 36px;
+  right: 8px;
+  background: var(--surface-2);
+  border: 2px solid var(--border);
+  color: var(--ink);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background var(--transition);
+}
+
+.copy-btn:hover { background: var(--accent-2); color: #0A0A0A; border-color: #0A0A0A; }
+
+/* Render an icon instead of the "copy" text */
+.copy-btn {
+  font-size: 0;
+  letter-spacing: 0;
+  width: 34px;
+  height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-btn::before {
+  content: '⧉';
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.copy-btn[data-copied="true"]::before {
+  content: '✓';
+  font-size: 1rem;
+}
+
+/* ============================================================
+   RETURN VALUE TABLES
+   ============================================================ */
+.returns-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 0.6rem;
+  margin-top: 1.2rem;
+}
+
+.returns-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  border: var(--border-w) solid var(--border);
+}
+
+.returns-table th {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  background: var(--ink);
+  color: var(--bg);
+  text-align: left;
+  border-right: 2px solid var(--border);
+}
+
+.returns-table td {
+  padding: 8px 14px;
+  border-bottom: 2px solid var(--border);
+  border-right: 2px solid var(--border);
+  vertical-align: top;
+  color: #303030;
+}
+
+.returns-table tr:last-child td { border-bottom: none; }
+.returns-table td:first-child {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  color: #9A3D00;
+  white-space: nowrap;
+  background: var(--surface-2);
+}
+
+/* ============================================================
+   INFO / CALLOUT BOXES
+   ============================================================ */
+.callout {
+  border: var(--border-w) solid var(--border);
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: var(--surface-2);
+}
+
+.callout-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.callout-body {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.callout.tip    { border-left: 6px solid var(--accent-3); }
+.callout.warn   { border-left: 6px solid var(--accent-2); }
+.callout.info   { border-left: 6px solid var(--accent-4); }
+.callout.danger { border-left: 6px solid var(--accent-1); }
+
+/* ============================================================
+   QUICK REF GRID
+   ============================================================ */
+.quick-ref-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0;
+  border: var(--border-w) solid var(--border);
+  margin-bottom: 2rem;
+}
+
+.qr-item {
+  padding: 1.2rem;
+  border-right: var(--border-w) solid var(--border);
+  border-bottom: var(--border-w) solid var(--border);
+  background: var(--surface);
+  transition: background var(--transition);
+}
+
+.qr-item:hover { background: var(--surface-2); }
+
+.qr-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--accent-1);
+  margin-bottom: 4px;
+}
+
+.qr-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin-bottom: 4px;
+  color: var(--ink);
+}
+
+.qr-fn {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+
+/* ============================================================
+   GETTING STARTED STEPS
+   ============================================================ */
+.steps {
+  counter-reset: step-counter;
+  list-style: none;
+}
+
+.step-item {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  align-items: flex-start;
+}
+
+.step-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  line-height: 1;
+  background: var(--ink);
+  color: var(--bg);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: var(--border-w) solid var(--border);
+}
+
+.step-content {
+  flex: 1;
+  padding-top: 4px;
+}
+
+.step-content h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: var(--ink);
+}
+
+.step-content p {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   PUBLISH PIPELINE
+   ============================================================ */
+.link-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.link-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: var(--surface);
+  border: var(--border-w) solid var(--border);
+  box-shadow: var(--shadow-off) var(--shadow-off) 0 var(--shadow);
+  padding: 1.2rem 1.3rem;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.link-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--shadow);
+  background: var(--surface-2);
+}
+
+.link-kicker {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--ink-muted);
+  margin-bottom: 0.5rem;
+}
+
+.link-title {
+  font-weight: 900;
+  font-size: 1rem;
+  color: var(--ink);
+  margin-bottom: 0.35rem;
+}
+
+.link-url {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.76rem;
+  color: var(--accent-4);
+  word-break: break-word;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 3rem 2rem;
+  border-top: var(--border-w) solid var(--border);
+  margin-top: 4rem;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 3rem;
+}
+
+.footer-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+
+.footer-tagline {
+  font-size: 0.82rem;
+  opacity: 0.6;
+  font-family: 'Space Mono', monospace;
+}
+
+.footer-col h4 {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin-bottom: 1rem;
+}
+
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 0.5rem; }
+.footer-col a {
+  color: inherit;
+  text-decoration: none;
+  font-size: 0.88rem;
+  opacity: 0.75;
+  transition: opacity var(--transition);
+}
+
+.footer-col a:hover { opacity: 1; }
+
+.footer-bottom {
+  max-width: 1100px;
+  margin: 2rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(255,255,255,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  opacity: 0.5;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-eyebrow { animation: fadeUp 0.5s ease both; }
+.hero h1      { animation: fadeUp 0.5s 0.1s ease both; }
+.hero-sub     { animation: fadeUp 0.5s 0.2s ease both; }
+.hero-install { animation: fadeUp 0.5s 0.3s ease both; }
+.hero-badges  { animation: fadeUp 0.5s 0.4s ease both; }
+.hero-grid-art { animation: fadeUp 0.5s 0.3s ease both; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main { padding: 2rem 1.5rem; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-grid-art { display: none; }
+  .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+}
+
+@media (max-width: 600px) {
+  .stats-bar { gap: 0; }
+  .stat-item { padding: 0 1rem; min-width: 80px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav>
+  <a href="#" class="nav-brand">
+    compilerdesign
+    <span class="pip-badge">v1.0.1</span>
+  </a>
+</nav>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero">
+  <div class="hero-stripe"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">Python Library · Compiler Design</div>
+      <h1>compiler<span>design</span></h1>
+      <p class="hero-sub">
+        A pure-Python library for demonstrating core compiler design concepts —
+        from lexical analysis to LR(0) automata. Import as <code>cd</code>.
+        Zero dependencies. Fully documented.
+      </p>
+      <div class="hero-install">
+        <span class="install-label">pip</span>
+        <div class="install-box" aria-label="Install command">
+          <button class="copy-btn" onclick="copyInstall(this)">copy</button>
+          <code id="installCmd">pip install compilerdesign</code>
+        </div>
+      </div>
+      <div class="hero-badges">
+        <span class="badge yellow">Python ≥ 3.8</span>
+        <span class="badge green">No Dependencies</span>
+        <span class="badge blue">MIT License</span>
+        <span class="badge red">8 Modules</span>
+      </div>
+    </div>
+    <div class="hero-grid-art">
+      <div class="grid-cell filled-5">LEX</div>
+      <div class="grid-cell filled-1">FIRST</div>
+      <div class="grid-cell filled-2">LL1</div>
+      <div class="grid-cell filled-3">LR0</div>
+      <div class="grid-cell">→</div>
+      <div class="grid-cell filled-4">PARSE</div>
+      <div class="grid-cell filled-1">ε</div>
+      <div class="grid-cell filled-5">RPN</div>
+      <div class="grid-cell filled-2">CFG</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item"><span class="stat-num">8</span><span class="stat-label">Modules</span></div>
+  <div class="stat-item"><span class="stat-num">20+</span><span class="stat-label">Functions</span></div>
+  <div class="stat-item"><span class="stat-num">0</span><span class="stat-label">Dependencies</span></div>
+  <div class="stat-item"><span class="stat-num">3.8+</span><span class="stat-label">Python</span></div>
+  <div class="stat-item"><span class="stat-num">MIT</span><span class="stat-label">License</span></div>
+</div>
+
+<!-- ============================================================
+     TWO-COLUMN LAYOUT
+     ============================================================ -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section-title">Getting Started</div>
+    <a href="#quickstart" class="sidebar-link active"><span class="link-num">00</span>Quick Start</a>
+    <div class="sidebar-section-title">API Reference</div>
+    <a href="#lexical"      class="sidebar-link"><span class="link-num">01</span>Lexical Analyzer</a>
+    <a href="#grammar"      class="sidebar-link"><span class="link-num">02</span>Grammar Transforms</a>
+    <a href="#firstfollow"  class="sidebar-link"><span class="link-num">03</span>FIRST &amp; FOLLOW</a>
+    <a href="#ll1"          class="sidebar-link"><span class="link-num">04</span>LL(1) Parsing</a>
+    <a href="#shiftreduce"  class="sidebar-link"><span class="link-num">05</span>Shift-Reduce</a>
+    <a href="#leading"      class="sidebar-link"><span class="link-num">06</span>Leading &amp; Trailing</a>
+    <a href="#lr0"          class="sidebar-link"><span class="link-num">07</span>LR(0) Items</a>
+    <a href="#intermediate" class="sidebar-link"><span class="link-num">08</span>Intermediate Code</a>
+    <div class="sidebar-section-title">Project Links</div>
+    <a href="#links"        class="sidebar-link"><span class="link-num">09</span>Links</a>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- ======================================================
+         QUICK START
+         ====================================================== -->
+    <section class="doc-section" id="quickstart">
+      <div class="section-header">
+        <div class="section-number">00</div>
+        <div class="section-title-block">
+          <h2>Quick Start</h2>
+          <span class="section-sub">Installation &amp; first usage</span>
+        </div>
+      </div>
+
+      <div class="quick-ref-grid">
+        <div class="qr-item"><div class="qr-num">01</div><div class="qr-title">Lexical Analyzer</div><div class="qr-fn">cd.lexical_analyzer(code)</div></div>
+        <div class="qr-item"><div class="qr-num">02</div><div class="qr-title">Grammar Transforms</div><div class="qr-fn">cd.eliminate_left_recursion(g)</div></div>
+        <div class="qr-item"><div class="qr-num">03</div><div class="qr-title">FIRST &amp; FOLLOW</div><div class="qr-fn">cd.compute_first_follow(g)</div></div>
+        <div class="qr-item"><div class="qr-num">04</div><div class="qr-title">LL(1) Table</div><div class="qr-fn">cd.build_ll1_table(g)</div></div>
+        <div class="qr-item"><div class="qr-num">05</div><div class="qr-title">Shift-Reduce</div><div class="qr-fn">cd.shift_reduce_parse(p, t)</div></div>
+        <div class="qr-item"><div class="qr-num">06</div><div class="qr-title">Leading &amp; Trailing</div><div class="qr-fn">cd.compute_leading_trailing(g)</div></div>
+        <div class="qr-item"><div class="qr-num">07</div><div class="qr-title">LR(0) Items</div><div class="qr-fn">cd.compute_lr0_items(p, start)</div></div>
+        <div class="qr-item"><div class="qr-num">08</div><div class="qr-title">Intermediate Code</div><div class="qr-fn">cd.infix_to_postfix(expr)</div></div>
+      </div>
+
+      <ul class="steps">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Install the package</h4>
+            <p>Requires Python 3.8 or later. No external dependencies.</p>
+            <div class="code-block" style="margin-top:0.8rem">
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+              <div class="code-label">bash</div>
+              <pre><code>pip install compilerdesign</code></pre>
+            </div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Import as <code>cd</code></h4>
+            <p>Use the conventional alias <code>cd</code> for brevity.</p>
+            <div class="code-block" style="margin-top:0.8rem">
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+              <div class="code-label">python</div>
+              <pre><code><span class="tok-kw">import</span> <span class="tok-var">compilerdesign</span> <span class="tok-kw">as</span> <span class="tok-var">cd</span></code></pre>
+            </div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Try your first analysis</h4>
+            <div class="code-block" style="margin-top:0.8rem">
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+              <div class="code-label">python</div>
+              <pre><code><span class="tok-kw">import</span> <span class="tok-var">compilerdesign</span> <span class="tok-kw">as</span> <span class="tok-var">cd</span>
+
+<span class="tok-cmt"># Tokenize C-style code</span>
+<span class="tok-var">result</span> = <span class="tok-fn">cd.lexical_analyzer</span>(<span class="tok-str">"int x = 10 + y;"</span>)
+<span class="tok-fn">print</span>(<span class="tok-var">result</span>[<span class="tok-str">'summary'</span>])
+
+<span class="tok-cmt"># Convert expression notation</span>
+<span class="tok-fn">print</span>(<span class="tok-fn">cd.infix_to_postfix</span>(<span class="tok-str">"a + b * c"</span>))  <span class="tok-cmt"># a b c * +</span></code></pre>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <div class="callout info">
+        <span class="callout-icon">ℹ️</span>
+        <div class="callout-body">
+          Grammar dictionaries map <strong>non-terminal strings → list of production strings</strong>.
+          Each production is space-separated symbols. Use <code class="inline-code-strong">ε</code> or <code class="inline-code-strong">eps</code> for epsilon/empty.
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         01 — LEXICAL ANALYZER
+         ====================================================== -->
+    <section class="doc-section" id="lexical">
+      <div class="section-header">
+        <div class="section-number">01</div>
+        <div class="section-title-block">
+          <h2>Lexical Analyzer</h2>
+          <span class="section-sub">Tokenize source code · count token types</span>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-card-header">
+          <div>
+            <div class="fn-name">cd.lexical_analyzer</div>
+            <div class="fn-signature">lexical_analyzer(code: str) → dict</div>
+          </div>
+          <div class="fn-tags">
+            <span class="fn-tag">lexer</span>
+            <span class="fn-tag">tokenizer</span>
+          </div>
+        </div>
+        <div class="fn-card-body">
+          <p class="fn-desc">
+            Tokenizes C-style source code using regex-based pattern matching.
+            Classifies each token as keyword, identifier, constant, operator, punctuation,
+            string literal, or comment. Returns detailed counts and unique token lists.
+          </p>
+
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            <div class="code-label">python</div>
+            <pre><code><span class="tok-var">code</span> = <span class="tok-str">"""
+int main() {
+    int x = 10;
+    float y = 3.14;
+    return x + y;
+}
+"""</span>
+
+<span class="tok-var">result</span> = <span class="tok-fn">cd.lexical_analyzer</span>(<span class="tok-var">code</span>)
+
+<span class="tok-fn">print</span>(<span class="tok-var">result</span>[<span class="tok-str">'summary'</span>])
+<span class="tok-cmt"># {</span>
+<span class="tok-cmt">#   'total_tokens': 24,</span>
+<span class="tok-cmt">#   'total_characters': 52,</span>
+<span class="tok-cmt">#   'total_lines': 7,</span>
+<span class="tok-cmt">#   'keywords': 5,</span>
+<span class="tok-cmt">#   'identifiers': 3,</span>
+<span class="tok-cmt">#   'integer_constants': 1,</span>
+<span class="tok-cmt">#   'float_constants': 1,</span>
+<span class="tok-cmt">#   'operators': 3,</span>
+<span class="tok-cmt">#   'punctuation': 8,</span>
+<span class="tok-cmt"># }</span>
+
+<span class="tok-fn">print</span>(<span class="tok-var">result</span>[<span class="tok-str">'tokens'</span>])         <span class="tok-cmt"># [('KEYWORD','int'), ('KEYWORD','main'), ...]</span>
+<span class="tok-fn">print</span>(<span class="tok-var">result</span>[<span class="tok-str">'unique_identifiers'</span>]) <span class="tok-cmt"># ['x', 'y']</span>
+<span class="tok-fn">print</span>(<span class="tok-var">result</span>[<span class="tok-str">'keywords_used'</span>])      <span class="tok-cmt"># ['int', 'float', 'return', 'main']</span></code></pre>
+          </div>
+
+          <p class="returns-label">↳ Return value keys</p>
+          <table class="returns-table">
+            <thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>tokens</td><td>list of tuples</td><td>Each element is (token_type, value)</td></tr>
+              <tr><td>summary</td><td>dict</td><td>Count of each token category + lines + characters</td></tr>
+              <tr><td>unique_identifiers</td><td>list</td><td>Deduplicated list of all identifier tokens</td></tr>
+              <tr><td>keywords_used</td><td>list</td><td>Deduplicated list of all keyword tokens found</td></tr>
+            </tbody>
+          </table>
+
+          <div class="callout tip" style="margin-top:1.2rem">
+            <span class="callout-icon">💡</span>
+            <div class="callout-body">
+              Token types: <code class="inline-code-strong">KEYWORD</code>, <code class="inline-code-strong">IDENTIFIER</code>, <code class="inline-code-strong">INTEGER_CONSTANT</code>,
+              <code class="inline-code-strong">FLOAT_CONSTANT</code>, <code class="inline-code-strong">OPERATOR</code>, <code class="inline-code-strong">PUNCTUATION</code>,
+              <code class="inline-code-strong">STRING_LITERAL</code>, <code class="inline-code-strong">COMMENT</code>, <code class="inline-code-strong">UNKNOWN</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         02 — GRAMMAR TRANSFORMATIONS
+         ====================================================== -->
+    <section class="doc-section" id="grammar">
+      <div class="section-header">
+        <div class="section-number">02</div>
+        <div class="section-title-block">
+          <h2>Grammar Transforms</h2>
+          <span class="section-sub">Left recursion · Left factoring · Ambiguity check</span>
+        </div>
+      </div>
+
+      <div class="callout info" style="margin-bottom:1.5rem">
+        <span class="callout-icon">📌</span>
+        <div class="callout-body">
+          <strong>Grammar format:</strong> A <code class="inline-code-strong">dict</code> mapping each non-terminal (string) to a list of
+          production strings. Symbols are space-separated. Use <code class="inline-code-strong">ε</code> or <code class="inline-code-strong">eps</code> for epsilon.
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-card-header">
+          <div>
+            <div class="fn-name">cd.eliminate_left_recursion</div>
+            <div class="fn-signature">eliminate_left_recursion(grammar: dict) → dict</div>
+          </div>
+          <div class="fn-tags"><span class="fn-tag">grammar</span><span class="fn-tag">LR</span></div>
+        </div>
+        <div class="fn-card-body">
+          <p class="fn-desc">Eliminates immediate left recursion from each non-terminal. Handles <code>A → Aα | β</code> patterns by introducing <code>A'</code> non-terminals.</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            <div class="code-label">python</div>
+            <pre><code><span class="tok-var">grammar</span> = {
+    <span class="tok-str">'E'</span>: [<span class="tok-str">'E + T'</span>, <span class="tok-str">'T'</span>],
+    <span class="tok-str">'T'</span>: [<span class="tok-str">'T * F'</span>, <span class="tok-str">'F'</span>],
+    <span class="tok-str">'F'</span>: [<span class="tok-str">'( E )'</span>, <span class="tok-str">'id'</span>]
+}
+
+<span class="tok-var">new_g</span> = <span class="tok-fn">cd.eliminate_left_recursion</span>(<span class="tok-var">grammar</span>)
+<span class="tok-cmt"># {</span>
+<span class="tok-cmt">#   'E':  ["T E'"],</span>
+<span class="tok-cmt">#   "E'": ["+ T E'", 'ε'],</span>
+<span class="tok-cmt">#   'T':  ["F T'"],</span>
+<span class="tok-cmt">#   "T'": ["* F T'", 'ε'],</span>
+<span class="tok-cmt">#   'F':  ['( E )', 'id']</span>
+<span class="tok-cmt"># }</span></code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-card-header">
+          <div>
+            <div class="fn-name">cd.left_factoring</div>
+            <div class="fn-signature">left_factoring(grammar: dict) → dict</div>
+          </div>
+          <div class="fn-tags"><span class="fn-tag">grammar</span><span class="fn-tag">LL</span></div>
+        </div>
+        <div class="fn-card-body">
+          <p class="fn-desc">Applies left factoring to eliminate common prefixes in productions. Introduces new non-terminals with primes (') to factor out shared prefixes.</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            <div class="code-label">python</div>
+            <pre><code><span class="tok-var">grammar</span> = {<span class="tok-str">'A'</span>: [<span class="tok-str">'a b'</span>, <span class="tok-str">'a c'</span>, <span class="tok-str">'d'</span>]}
+
+<span class="tok-var">factored</span> = <span class="tok-fn">cd.left_factoring</span>(<span class="tok-var">grammar</span>)
+<span class="tok-cmt"># {'A': ["a A'", 'd'],  "A'": ['b', 'c']}</span></code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-card-header">
+          <div>
+            <div class="fn-name">cd.check_ambiguity</div>
+            <div class="fn-signature">check_ambiguity(grammar: dict) → dict</div>
+          </div>
+          <div class="fn-tags"><span class="fn-tag">grammar</span><span class="fn-tag">validation</span></div>
+        </div>
+        <div class="fn-card-body">
+          <p class="fn-desc">Heuristic ambiguity detection. Flags duplicate productions and productions sharing the same leading symbol. Not a complete decidability check.</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            <div class="code-label">python</div>
+            <pre><code><span class="tok-var">result</span> = <span class="tok-fn">cd.check_ambiguity</span>({<span class="tok-str">'A'</span>: [<span class="tok-str">'a'</span>, <span class="tok-str">'a'</span>]})
+<span class="tok-cmt"># {'ambiguous': True, 'issues': ["A has duplicate productions."]}</span>
+
+<span class="tok-var">result</span> = <span class="tok-fn">cd.check_ambiguity</span>(<span class="tok-var">grammar</span>)
+<span class="tok-cmt"># {'ambiguous': False, 'issues': []}</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         03 — FIRST & FOLLOW
+         ====================================================== -->
+    <section class="doc-section" id="firstfollow">
+      <div class="section-header">
+        <div class="section-number">03</div>
+        <div class="section-title-block">
+          <h2>FIRST &amp; FOLLOW</h2>
+          <span class="section-sub">Set computation for predictive parsing</span>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-card-header">
+          <div>
+            <div class="fn-name">cd.compute_first_follow</div>
+            <div class="fn-signature">compute_first_follow(grammar: dict, start: str = None) → dict</div>
+          </div>
+          <div class="fn-tags"><span class="fn-tag">sets</span><span class="fn-tag">LL(1)</span></div>
+        </div>
+        <div class="fn-card-body">
+          <p class="fn-desc">Computes both FIRST and FOLLOW sets in one call. The start symbol defaults to the first key in the grammar dict. Returns sorted lists for each non-terminal.</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            <div class="code-label">python</div>
+            <pre><code><span class="tok-var">grammar</span> = {
+    <span class="tok-str">'E'</span>: [<span class="tok-str">'T R'</span>],    <span class="tok-str">'R'</span>: [<span class="tok-str">'+ T R'</span>, <span class="tok-str">'ε'</span>],
+    <span class="tok-str">'T'</span>: [<span class="tok-str">'F Y'</span>],    <span class="tok-str">'Y'</span>: [<span class="tok-str">'* F Y'</span>, <span class="tok-str">'ε'</span>],
+    <span class="tok-str">'F'</span>: [<span class="tok-str">'( E )'</span>, <span class="tok-str">'i'</span>]
+}
+
+<span class="tok-var">result</span> = <span class="tok-fn">cd.compute_first_follow</span>(<span class="tok-var">grammar</span>, start=<span class="tok-str">'E'</span>)
+
+<span class="tok-fn">print</span>(<span class="tok-var">result</span>[<span class="tok-str">'FIRST'</span>])
+<span class="tok-cmt"># {'E': ['(', 'i'], 'R': ['+', 'ε'], 'T': ['(', 'i'],</span>
+<span class="tok-cmt">#  'Y': ['*', 'ε'], 'F': ['(', 'i']}</span>
+
+<span class="tok-fn">print</span>(<span class="tok-var">result</span>[<span class="tok-str">'FOLLOW'</span>])
+<span class="tok-cmt"># {'E': ['$', ')'], 'R': ['$', ')'], 'T': ['$', ')', '+'],</span>
+<span class="tok-cmt">#  'Y': ['$', ')', '+'], 'F': ['$', ')', '*', '+']}</span></code></pre>
+          </div>
+
+          <p class="returns-label">↳ Individual functions</p>
+          <div class="code-block">
+            <div class="code-label">python</div>
+            <pre><code><span class="tok-var">first</span>  = <span class="tok-fn">cd.compute_first</span>(<span class="tok-var">grammar</span>)
+<span class="tok-var">follow</span> = <span class="tok-fn">cd.compute_follow</span>(<span class="tok-var">grammar</span>, start=<span class="tok-str">'E'</span>)</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         04 — LL(1)
+         ====================================================== -->
+    <section class="doc-section" id="ll1">
+      <div class="section-header">
+        <div class="section-number">04</div>
+        <div class="section-title-block">
+          <h2>LL(1) Predictive Parsing</h2>
+          <span class="section-sub">Table construction · top-down parsing</span>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-card-header">
+          <div>
+            <div class="fn-name">cd.build_ll1_table</div>
+            <div class="fn-signature">build_ll1_table(grammar: dict, start: str = None) → dict</div>
+          </div>
+          <div class="fn-tags"><span class="fn-tag">LL(1)</span><span class="fn-tag">table</span></div>
+        </div>
+        <div class="fn-card-body">
+          <p class="fn-desc">Builds the LL(1) predictive parsing table from the grammar. Detects conflicts and reports whether the grammar is LL(1).</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            <div class="code-label">python</div>
+            <pre><code><span class="tok-var">r</span> = <span class="tok-fn">cd.build_ll1_table</span>(<span class="tok-var">grammar</span>, start=<span class="tok-str">'E'</span>)
+
+<span class="tok-fn">print</span>(<span class="tok-var">r</span>[<span class="tok-str">'is_ll1'</span>])      <span class="tok-cmt"># True</span>
+<span class="tok-fn">print</span>(<span class="tok-var">r</span>[<span class="tok-str">'conflicts'</span>])  <span class="tok-cmt"># [] (empty if LL(1))</span>
+<span class="tok-fn">print</span>(<span class="tok-var">r</span>[<span class="tok-str">'table'</span>])      <span class="tok-cmt"># {('E','('): 'T R', ('E','i'): 'T R', ...}</span></code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-card-header">
+          <div>
+            <div class="fn-name">cd.ll1_parse</div>
+            <div class="fn-signature">ll1_parse(grammar: dict, tokens: list, start: str = None) → dict</div>
+          </div>
+          <div class="fn-tags"><span class="fn-tag">LL(1)</span><span class="fn-tag">parser</span></div>
+        </div>
+        <div class="fn-card-body">
+          <p class="fn-desc">Parses a list of input tokens using the LL(1) table. Returns step-by-step trace of the parse including stack state, remaining input, and action taken at each step.</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            <div class="code-label">python</div>
+            <pre><code><span class="tok-var">result</span> = <span class="tok-fn">cd.ll1_parse</span>(
+    <span class="tok-var">grammar</span>,
+    tokens=[<span class="tok-str">'i'</span>, <span class="tok-str">'+'</span>, <span class="tok-str">'i'</span>, <span class="tok-str">'*'</span>, <span class="tok-str">'i'</span>],
+    start=<span class="tok-str">'E'</span>
+)
+
+<span class="tok-fn">print</span>(<span class="tok-var">result</span>[<span class="tok-str">'accepted'</span>])  <span class="tok-cmt"># True</span>
+
+<span class="tok-kw">for</span> <span class="tok-var">step</span> <span class="tok-kw">in</span> <span class="tok-var">result</span>[<span class="tok-str">'steps'</span>]:
+    <span class="tok-fn">print</span>(<span class="tok-var">step</span>[<span class="tok-str">'stack'</span>], <span class="tok-str">'|'</span>, <span class="tok-var">step</span>[<span class="tok-str">'input'</span>], <span class="tok-str">'|'</span>, <span class="tok-var">step</span>[<span class="tok-str">'action'</span>])</code></pre>
+          </div>
+
+          <p class="returns-label">↳ Each step dict contains</p>
+          <table class="returns-table">
+            <thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>stack</td><td>list</td><td>Current parse stack (top-first)</td></tr>
+              <tr><td>input</td><td>list</td><td>Remaining input tokens</td></tr>
+              <tr><td>action</td><td>str</td><td>Action taken: Match X, A → prod, ACCEPT, or ERROR</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         05 — SHIFT-REDUCE
+         ====================================================== -->
+    <section class="doc-section" id="shiftreduce">
+      <div class="section-header">
+        <div class="section-number">05</div>
+        <div class="section-title-block">
+          <h2>Shift-Reduce Parsing</h2>
+          <span class="section-sub">Bottom-up parsing simulation</span>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-card-header">
+          <div>
+            <div class="fn-name">cd.shift_reduce_parse</div>
+            <div class="fn-signature">shift_reduce_parse(productions: list, tokens: list) → dict</div>
+          </div>
+          <div class="fn-tags"><span class="fn-tag">LR</span><span class="fn-tag">bottom-up</span></div>
+        </div>
+        <div class="fn-card-body">
+          <p class="fn-desc">
+            Simulates shift-reduce parsing using handle-finding. Productions are passed as a list of
+            <code>(lhs, rhs)</code> tuples where <code>rhs</code> is a list of symbols.
+            The first production's LHS is treated as the start symbol.
+          </p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            <div class="code-label">python</div>
+            <pre><code><span class="tok-var">productions</span> = [
+    (<span class="tok-str">'E'</span>, [<span class="tok-str">'E'</span>, <span class="tok-str">'+'</span>, <span class="tok-str">'T'</span>]),
+    (<span class="tok-str">'E'</span>, [<span class="tok-str">'T'</span>]),
+    (<span class="tok-str">'T'</span>, [<span class="tok-str">'T'</span>, <span class="tok-str">'*'</span>, <span class="tok-str">'F'</span>]),
+    (<span class="tok-str">'T'</span>, [<span class="tok-str">'F'</span>]),
+    (<span class="tok-str">'F'</span>, [<span class="tok-str">'id'</span>])
+]
+
+<span class="tok-var">result</span> = <span class="tok-fn">cd.shift_reduce_parse</span>(<span class="tok-var">productions</span>, tokens=[<span class="tok-str">'id'</span>, <span class="tok-str">'+'</span>, <span class="tok-str">'id'</span>])
+
+<span class="tok-fn">print</span>(<span class="tok-var">result</span>[<span class="tok-str">'accepted'</span>])  <span class="tok-cmt"># True</span>
+
+<span class="tok-kw">for</span> <span class="tok-var">step</span> <span class="tok-kw">in</span> <span class="tok-var">result</span>[<span class="tok-str">'steps'</span>]:
+    <span class="tok-fn">print</span>(<span class="tok-str">f"Stack: {step['stack']}  Input: {step['input']}  Action: {step['action']}"</span>)</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         06 — LEADING & TRAILING
+         ====================================================== -->
+    <section class="doc-section" id="leading">
+      <div class="section-header">
+        <div class="section-number">06</div>
+        <div class="section-title-block">
+          <h2>Leading &amp; Trailing</h2>
+          <span class="section-sub">Operator precedence parsing sets</span>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-card-header">
+          <div>
+            <div class="fn-name">cd.compute_leading_trailing</div>
+            <div class="fn-signature">compute_leading_trailing(grammar: dict) → dict</div>
+          </div>
+          <div class="fn-tags"><span class="fn-tag">sets</span><span class="fn-tag">operator precedence</span></div>
+        </div>
+        <div class="fn-card-body">
+          <p class="fn-desc">
+            Computes LEADING and TRAILING sets used in operator-precedence (Floyd) parsing.
+            LEADING(A) = terminals that can appear leftmost in any derivation of A.
+            TRAILING(A) = terminals that can appear rightmost.
+          </p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            <div class="code-label">python</div>
+            <pre><code><span class="tok-var">result</span> = <span class="tok-fn">cd.compute_leading_trailing</span>(<span class="tok-var">grammar</span>)
+
+<span class="tok-fn">print</span>(<span class="tok-var">result</span>[<span class="tok-str">'LEADING'</span>])
+<span class="tok-cmt"># {'E': ['(', '+', '*', 'i'], 'R': ['+'], ...}</span>
+
+<span class="tok-fn">print</span>(<span class="tok-var">result</span>[<span class="tok-str">'TRAILING'</span>])
+<span class="tok-cmt"># {'E': [')', '+', '*', 'i'], ...}</span>
+
+<span class="tok-cmt"># Individual functions:</span>
+<span class="tok-var">leading</span>  = <span class="tok-fn">cd.compute_leading</span>(<span class="tok-var">grammar</span>)
+<span class="tok-var">trailing</span> = <span class="tok-fn">cd.compute_trailing</span>(<span class="tok-var">grammar</span>)</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         07 — LR(0) ITEMS
+         ====================================================== -->
+    <section class="doc-section" id="lr0">
+      <div class="section-header">
+        <div class="section-number">07</div>
+        <div class="section-title-block">
+          <h2>LR(0) Items</h2>
+          <span class="section-sub">Canonical collection · closure · goto</span>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-card-header">
+          <div>
+            <div class="fn-name">cd.compute_lr0_items</div>
+            <div class="fn-signature">compute_lr0_items(productions: list, start: str) → dict</div>
+          </div>
+          <div class="fn-tags"><span class="fn-tag">LR(0)</span><span class="fn-tag">automata</span><span class="fn-tag">states</span></div>
+        </div>
+        <div class="fn-card-body">
+          <p class="fn-desc">
+            Constructs the canonical collection of LR(0) item sets. Automatically adds the augmented
+            production <code>S' → S</code>. Returns all states with their items and the
+            GOTO transition table between states.
+          </p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            <div class="code-label">python</div>
+            <pre><code><span class="tok-var">productions</span> = [
+    (<span class="tok-str">'E'</span>, [<span class="tok-str">'E'</span>, <span class="tok-str">'+'</span>, <span class="tok-str">'T'</span>]),
+    (<span class="tok-str">'E'</span>, [<span class="tok-str">'T'</span>]),
+    (<span class="tok-str">'T'</span>, [<span class="tok-str">'id'</span>])
+]
+
+<span class="tok-var">result</span> = <span class="tok-fn">cd.compute_lr0_items</span>(<span class="tok-var">productions</span>, start=<span class="tok-str">'E'</span>)
+
+<span class="tok-fn">print</span>(<span class="tok-str">f"Total states: {result['num_states']}"</span>)  <span class="tok-cmt"># Total states: 6</span>
+
+<span class="tok-kw">for</span> <span class="tok-var">state</span> <span class="tok-kw">in</span> <span class="tok-var">result</span>[<span class="tok-str">'states'</span>]:
+    <span class="tok-fn">print</span>(<span class="tok-str">f"\nState {state['id']}:"</span>)
+    <span class="tok-kw">for</span> <span class="tok-var">item</span> <span class="tok-kw">in</span> <span class="tok-var">state</span>[<span class="tok-str">'items'</span>]:
+        <span class="tok-fn">print</span>(<span class="tok-str">f"  {item}"</span>)  <span class="tok-cmt"># e.g. "E' -> . E"</span>
+
+<span class="tok-kw">for</span> (<span class="tok-var">frm</span>, <span class="tok-var">sym</span>, <span class="tok-var">to</span>) <span class="tok-kw">in</span> <span class="tok-var">result</span>[<span class="tok-str">'transitions'</span>]:
+    <span class="tok-fn">print</span>(<span class="tok-str">f"  State {frm} --{sym}--> State {to}"</span>)</code></pre>
+          </div>
+
+          <p class="returns-label">↳ Return value keys</p>
+          <table class="returns-table">
+            <thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>states</td><td>list of dicts</td><td>Each dict has <code>id</code> (int) and <code>items</code> (list of strings)</td></tr>
+              <tr><td>transitions</td><td>list of tuples</td><td>(from_state_id, symbol, to_state_id)</td></tr>
+              <tr><td>num_states</td><td>int</td><td>Total number of LR(0) states</td></tr>
+              <tr><td>augmented_start</td><td>str</td><td>The added augmented start symbol (e.g. <code>E'</code>)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         08 — INTERMEDIATE CODE
+         ====================================================== -->
+    <section class="doc-section" id="intermediate">
+      <div class="section-header">
+        <div class="section-number">08</div>
+        <div class="section-title-block">
+          <h2>Intermediate Code</h2>
+          <span class="section-sub">Postfix · Prefix · Infix conversion</span>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-card-header">
+          <div>
+            <div class="fn-name">Expression Converters</div>
+            <div class="fn-signature">All 6 pairwise conversions supported</div>
+          </div>
+          <div class="fn-tags"><span class="fn-tag">ICG</span><span class="fn-tag">postfix</span><span class="fn-tag">prefix</span><span class="fn-tag">infix</span></div>
+        </div>
+        <div class="fn-card-body">
+          <p class="fn-desc">Convert arithmetic expressions between infix (standard), postfix (RPN), and prefix (Polish notation). Supports <code>+ - * / % ^</code> with correct operator precedence and right-associativity for <code>^</code>.</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            <div class="code-label">python</div>
+            <pre><code><span class="tok-cmt"># Infix → Postfix (Reverse Polish Notation)</span>
+<span class="tok-fn">cd.infix_to_postfix</span>(<span class="tok-str">"a + b * c"</span>)     <span class="tok-cmt"># "a b c * +"</span>
+<span class="tok-fn">cd.infix_to_postfix</span>(<span class="tok-str">"(a + b) * c"</span>)   <span class="tok-cmt"># "a b + c *"</span>
+<span class="tok-fn">cd.infix_to_postfix</span>(<span class="tok-str">"a ^ b ^ c"</span>)     <span class="tok-cmt"># "a b c ^ ^"  (right-assoc)</span>
+
+<span class="tok-cmt"># Infix → Prefix (Polish Notation)</span>
+<span class="tok-fn">cd.infix_to_prefix</span>(<span class="tok-str">"a + b * c"</span>)      <span class="tok-cmt"># "+ a * b c"</span>
+
+<span class="tok-cmt"># Postfix → Infix</span>
+<span class="tok-fn">cd.postfix_to_infix</span>(<span class="tok-str">"a b c * +"</span>)      <span class="tok-cmt"># "(a + (b * c))"</span>
+
+<span class="tok-cmt"># Prefix → Infix</span>
+<span class="tok-fn">cd.prefix_to_infix</span>(<span class="tok-str">"+ a * b c"</span>)      <span class="tok-cmt"># "(a + (b * c))"</span>
+
+<span class="tok-cmt"># Postfix → Prefix</span>
+<span class="tok-fn">cd.postfix_to_prefix</span>(<span class="tok-str">"a b c * +"</span>)    <span class="tok-cmt"># "+ a * b c"</span>
+
+<span class="tok-cmt"># Prefix → Postfix</span>
+<span class="tok-fn">cd.prefix_to_postfix</span>(<span class="tok-str">"+ a * b c"</span>)    <span class="tok-cmt"># "a b c * +"</span>
+
+<span class="tok-cmt"># Universal converter</span>
+<span class="tok-fn">cd.convert_expression</span>(
+    <span class="tok-str">"a + b * c"</span>,
+    from_notation=<span class="tok-str">"infix"</span>,
+    to_notation=<span class="tok-str">"postfix"</span>
+)  <span class="tok-cmt"># "a b c * +"</span></code></pre>
+          </div>
+
+          <p class="returns-label">↳ Operator precedence table</p>
+          <table class="returns-table">
+            <thead><tr><th>Operator</th><th>Precedence</th><th>Associativity</th></tr></thead>
+            <tbody>
+              <tr><td>+ &nbsp; -</td><td>1 (lowest)</td><td>Left</td></tr>
+              <tr><td>* &nbsp; / &nbsp; %</td><td>2</td><td>Left</td></tr>
+              <tr><td>^</td><td>3 (highest)</td><td>Right</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         LINKS
+         ====================================================== -->
+    <section class="doc-section" id="links">
+      <div class="section-header">
+        <div class="section-number">09</div>
+        <div class="section-title-block">
+          <h2>Project Links</h2>
+          <span class="section-sub">Portfolio · GitHub · PyPI release page</span>
+        </div>
+      </div>
+
+      <div class="link-grid">
+        <a class="link-card" href="https://portfolio-ig10.vercel.app" target="_blank" rel="noopener noreferrer">
+          <div class="link-kicker">Portfolio</div>
+          <div class="link-title">Personal Portfolio</div>
+          <div class="link-url">portfolio-ig10.vercel.app</div>
+        </a>
+        <a class="link-card" href="https://github.com/aditya-ig" target="_blank" rel="noopener noreferrer">
+          <div class="link-kicker">GitHub</div>
+          <div class="link-title">Developer Profile</div>
+          <div class="link-url">github.com/aditya-ig</div>
+        </a>
+        <a class="link-card" href="https://pypi.org/project/compilerdesign/1.0.1/" target="_blank" rel="noopener noreferrer">
+          <div class="link-kicker">PyPI</div>
+          <div class="link-title">compilerdesign 1.0.1</div>
+          <div class="link-url">pypi.org/project/compilerdesign/1.0.1/</div>
+        </a>
+      </div>
+
+      <div class="callout info" style="margin-top:1.5rem">
+        <span class="callout-icon">↗</span>
+        <div class="callout-body">
+          These links point to the live project presence for the library and your developer profile.
+          The docs page now stays focused on usage and API reference instead of package publishing steps.
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">compilerdesign</div>
+      <div class="footer-tagline">import compilerdesign as cd</div>
+    </div>
+    <div class="footer-col">
+      <h4>API Reference</h4>
+      <ul>
+        <li><a href="#lexical">Lexical Analyzer</a></li>
+        <li><a href="#grammar">Grammar Transforms</a></li>
+        <li><a href="#firstfollow">FIRST &amp; FOLLOW</a></li>
+        <li><a href="#ll1">LL(1) Parsing</a></li>
+        <li><a href="#shiftreduce">Shift-Reduce</a></li>
+        <li><a href="#leading">Leading &amp; Trailing</a></li>
+        <li><a href="#lr0">LR(0) Items</a></li>
+        <li><a href="#intermediate">Intermediate Code</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="https://portfolio-ig10.vercel.app" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+        <li><a href="https://github.com/aditya-ig" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://pypi.org/project/compilerdesign/1.0.1/" target="_blank" rel="noopener noreferrer">PyPI 1.0.1</a></li>
+        <li><a href="#quickstart">Quick Start</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>compilerdesign v1.0.1 · MIT License</span>
+    <span>Built with Python · No dependencies</span>
+  </div>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+// ── Copy Code Blocks ─────────────────────────────────────────
+function copyCode(btnEl) {
+  const pre = btnEl.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btnEl.dataset.copied = "true";
+    btnEl.style.background = 'var(--accent-3)';
+    btnEl.style.color = '#0A0A0A';
+    setTimeout(() => {
+      delete btnEl.dataset.copied;
+      btnEl.style.background = '';
+      btnEl.style.color = '';
+    }, 1600);
+  });
+}
+
+function copyInstall(btnEl) {
+  navigator.clipboard.writeText('pip install compilerdesign').then(() => {
+    btnEl.dataset.copied = "true";
+    btnEl.style.background = 'var(--accent-3)';
+    btnEl.style.color = '#0A0A0A';
+    setTimeout(() => {
+      delete btnEl.dataset.copied;
+      btnEl.style.background = '';
+      btnEl.style.color = '';
+    }, 1600);
+  });
+}
+
+// ── Active Sidebar Highlight ─────────────────────────────────
+const sections = document.querySelectorAll('.doc-section[id]');
+const links    = document.querySelectorAll('.sidebar-link');
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      links.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+sections.forEach(s => observer.observe(s));
+
+// ── Animate fn-cards on scroll ────────────────────────────────
+const cards = document.querySelectorAll('.fn-card');
+const cardObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.08 });
+
+cards.forEach((c, i) => {
+  c.style.opacity = '0';
+  c.style.transform = 'translateY(18px)';
+  c.style.transition = `opacity 0.4s ${i * 0.05}s ease, transform 0.4s ${i * 0.05}s ease, box-shadow 0.18s ease`;
+  cardObs.observe(c);
+});
+</script>
+
+</body>
+</html>

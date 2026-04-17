@@ -68,77 +68,39 @@ Developer:
     print(message)
     return message
 
-# Lexical Analysis
-from .lexical import lexical_analyzer
-
-# Grammar Transformations
-from .grammar import (
-    eliminate_left_recursion,
-    left_factoring,
-    check_ambiguity,
-)
-
-# FIRST and FOLLOW
-from .first_follow import (
-    compute_first,
-    compute_follow,
-    compute_first_follow,
-)
-
-# LL(1) Predictive Parsing
-from .ll1 import (
-    build_ll1_table,
-    ll1_parse,
-)
-
-# Shift-Reduce Parsing
-from .shift_reduce import shift_reduce_parse
-
-# LEADING and TRAILING
-from .leading_trailing import (
-    compute_leading,
-    compute_trailing,
-    compute_leading_trailing,
-)
-
-# LR(0) Items
-from .lr0 import compute_lr0_items
-
-# Intermediate Code Generation
+from .first_follow import compute_first, compute_first_follow, compute_follow
+from .grammar import check_ambiguity, eliminate_left_recursion, left_factoring
 from .intermediate_code import (
+    convert_expression,
     infix_to_postfix,
     infix_to_prefix,
     postfix_to_infix,
     postfix_to_prefix,
     prefix_to_infix,
     prefix_to_postfix,
-    convert_expression,
 )
+from .leading_trailing import compute_leading, compute_leading_trailing, compute_trailing
+from .lexical import lexical_analyzer
+from .ll1 import build_ll1_table, ll1_parse
+from .lr0 import compute_lr0_items
+from .shift_reduce import shift_reduce_parse
 
 __all__ = [
     "help",
-    # Lexical
     "lexical_analyzer",
-    # Grammar
     "eliminate_left_recursion",
     "left_factoring",
     "check_ambiguity",
-    # FIRST / FOLLOW
     "compute_first",
     "compute_follow",
     "compute_first_follow",
-    # LL(1)
     "build_ll1_table",
     "ll1_parse",
-    # Shift-Reduce
     "shift_reduce_parse",
-    # Leading / Trailing
     "compute_leading",
     "compute_trailing",
     "compute_leading_trailing",
-    # LR(0)
     "compute_lr0_items",
-    # Intermediate Code
     "infix_to_postfix",
     "infix_to_prefix",
     "postfix_to_infix",
